@@ -1,199 +1,328 @@
-import React, { useEffect, useState ,useCallback} from 'react'; 
+import React ,{useState, useEffect,useCallback}from 'react';
+import {View, Text,StyleSheet,ActivityIndicator,TouchableHighlight,Dimensions,TextInput,Button,ScrollView} from 'react-native'
 import { useFocusEffect } from "@react-navigation/native";
-import {StyleSheet, View, Text, ScrollView, Dimensions,ActivityIndicator} from "react-native"; 
+import {Image} from 'react-native-elements'; 
+
 import {firebaseApp} from "../../utils/firebase"; 
 import firebase from 'firebase/app'; 
-import "firebase/firestore"; 
-import CarouselImagenes from '../../components/Sucursales/CarouselImagenes'; 
-import Reviews from '../../components/Sucursales/Reviews';
+import "firebase/firestore";
 
-import {map} from "lodash"; 
-/*Rating nos permite colocar la puntuación de la sucursal con estrellas 
-LisItem nos permitirá visualizar las propiedades de cada sucursal como una lista*/ 
 
-import { Rating, ListItem, Icon } from 'react-native-elements'
+//COMPONENTES//
+
+import ListarPedidos from "../../components/Sucursales/ListarPedido";
 
 
 const db = firebase.firestore(firebaseApp); 
-//Obtenemos el ancho de la ventana del dispositivo 
-const screenWidth=Dimensions.get("window").width; 
 
+export default function Carrito() {
 
-export default function Sucursal(propiedades){ 
+  //const navegacion = useNavigation();
+  //State para el Usuario
+  const [usuario, setUsuario]=useState(null); 
+  //State para el puntero
+  const [puntero, setPuntero]=useState(null);
+
+  const [ordenDia, setOD]=useState(null); 
+
+  const [platillos, setPlatillos]=useState([]); 
+  const [loading,setIsLoading]=useState(false);
+  var imagen="";
+
+  const user = firebase.auth().currentUser; 
+
+  useFocusEffect( 
+    useCallback(()=>{ 
+     
+  
+      const arrPlatillos=[]; 
+      console.log("------------------Obteniendo Registros---------");
+      /* db.collection("pedidos").orderBy('usuario_entregado')
+      .on('child_added', function(snapshot) { 
+          var valor = snapshot.val();
+          console.log(valor);
+      }); */
+      console.log("------------------Obteniendo Registros---------");
+      /* .where("usuario","==",user.uid).limit(10).get() 
+          .then((res)=>{ 
+            setPuntero(res.docs[res.docs.length -1]); 
+            res.forEach((doc)=>{ 
+
+          
+              //extraemos cada documento y lo almacenamos en un objeto sucursal 
+              const pedido =doc.data(); 
+              //la clave del comentario no asigna a menos que lo indiquemos 
+              pedido.id =doc.id; 
+              //almacenamos cada sucursal en un arreglo. 
+              console.log("BD en verdad conectada?____________");
+              console.log(arrPlatillos);
+              console.log("BD en verdad conectada?____________"); 
+          }); 
+           //Al terminar de recuperar todos los documentos los almacenamos en el useState sucursales 
+           setPlatillos(arrPlatillos); 
+           
+          }); */
+      },[]) 
+    );
+
     
+   
+    function añadirCarrito(){
+        console.log("Disparandose");
+        var pedido={
+            usuario: user.uid,
+            entregado: false,
+            fecha: new Date()
+        }
 
-    //Extraemos los objetos navigation y route  
-    const {navigation,route}=propiedades; 
-   //Extraemos el id y nombre contenido en el objeto params de route  
-    const {platillo}=route.params; 
-     
-    /* //useState para almacenar datos de la sucursal 
-    const[sucursal,setSucursal]=useState(null); 
-
-    //Estado para puntuación de la sucursal 
-    const [rating, setRating]=useState(0); 
-
-    useEffect(() => { 
-       
-        navigation.setOptions({ title: nombre }); 
-      }, []);  */
-
-     
-
-    /*  useFocusEffect( 
-        useCallback(()=>{  
-
-                    //Consultamos la sucursal con id recibido como parámetro desde la lista de sucursales
-            db.collection("sucursales").doc(id).get() 
-            .then((resp) =>{ 
-                //Extraemos los datos del documento recuperado en la consulta
-                const datos=resp.data(); 
-                //Asignamos el id al conjunto de datos
-                datos.id=resp.id; 
-                //Asignamos los datos de la sucursal recuperado a nuestro useState
-                setSucursal(datos); 
-                //Asignamos un rating promedio al state que se muestra en la vista
-                setRating(datos.rating)
-            }); 
-
-         },[]) 
-        ); */
-
-   return( 
-        <View> 
-            {/* {sucursal?( 
-                
-                <ScrollView vertical> 
-                    <CarouselImagenes 
-                   
-                        arrayImages={sucursal.imagenes} 
-                        height={250} 
-                        width={screenWidth} 
-                    /> 
-
-                    <Informacion  
-                        nombre={sucursal.nombre} 
-                        direccion={sucursal.direccion} 
-                        descripcion={sucursal.descripcion} 
-                        rating={rating} 
-                    />
-                    
-                    <Reviews 
-                    navigation={navigation} 
-                    id={sucursal.id} 
-                    nombre={nombre}
-                    /> 
-                </ScrollView> 
-            ):( 
-                <View style={styles.sucursales}> 
-                     
-                    <ActivityIndicator size="large" color="#0000ff"/> 
-                    <Text>Cargando Sucursal</Text> 
-                </View> 
-            )}  */}
-        </View> 
-         
-    )
-} 
-
-function Informacion(propiedades){ 
-    const {nombre, direccion, descripcion, rating}=propiedades; 
-
-    const listaItems =[ 
-        //El primer elemento de la lista será nuestra dirección 
-        { 
-           text: direccion, 
-           iconName: "google-maps", 
-           iconType: "material-community", 
-           action:null, 
-         
-        }, 
-        //podemos agregar multiples valores como no tenemos mas datos en la bd 
-        //colocaremos datos fijos para ejemplificar 
-        { 
-            text: "443 1893456", 
-            iconName: "phone", 
-            iconType: "material-community", 
-            action:null, 
+        db.collection("pedidos") 
+        .add(pedido) 
+        .then(() => { 
             
-         }, 
-         { 
-                text:"mail@gmail.com", 
-                iconName: "at", 
-                iconType: "material-community", 
-                action:null, 
-                }
-    ];
+        setIsLoading(false); 
+        // navegacion.navigate("Comentarios", { 
+        //})  
+        }) 
+        .catch(() => { 
+       // toastRef.current.show("Error al registrar Comentario"); 
+        setIsLoading(false); 
+        }); 
+    }
+    return (
+    <ScrollView>
+      <View style={styles.vista}>
+        <View stye={styles.ctnHeader}>
+            <View style={styles.logo}>
+            <Text> RESTAURANT APP</Text>
+            </View>
+            <View>
+                <View style={styles.generalCarrito}>
+                    <Image 
+                                resizeMode="cover" 
+                                PlaceholderContent={<ActivityIndicator color="#0000ff"/>} 
+                                source={require("../../../assets/img/carrito.png")} 
+                                style={styles.imagen} 
+                            /> 
+                    <View style={styles.ctnCirculo}>
+                        <TouchableHighlight
+                            style = {styles.circulo}
+                            underlayColor = '#ccc'
+                            /* onPress = { () => alert('Yaay!') } */
+                            >
+                            <Text> 1 </Text>
+                        </TouchableHighlight>
 
-    return ( 
-        <View style={styles.viewSucursal}> 
-            <View style={{flexDirection: 'row'}}> 
-                <Text style={styles.nombre}>{nombre}</Text> 
-                <Rating  
-                style={styles.rating} 
-                imageSize={20} 
-                readonly 
-                startingValue={parseFloat(rating)} 
-                /> 
-             </View> 
-            <View style={{flexDirection: 'row'}}> 
-                <Text style={styles.descripcion}>{descripcion}</Text> 
-            </View> 
-            <View> 
-            { 
-                listaItems.map((item, index) => ( 
-                <ListItem key={index}  containerStyle={styles.listaInfo}> 
-                    <Icon  name={item.iconName} type={item.iconType} color="#0A6ED3" /> 
-                    <ListItem.Content> 
-                    <ListItem.Title>{item.text}</ListItem.Title> 
-                    </ListItem.Content> 
-                </ListItem> 
-                )) 
-            } 
-            </View> 
-        </View> 
+                   </View>
+                    <View style={styles.ctnTotal}>
+                        <Text style={styles.estiloTotal}>Total</Text>
+                        <Text style={styles.estiloTotal}> $00</Text>
+                    </View>
+                </View>
+               
+                <View style={styles.ctnSolicitados}>
+                    <View style={{alignItems: "center"}}>
+                        <Text style={styles.subCategoria}>Por Solicitar</Text>
+                    </View>
+                   <View style={{width:"100%",flexDirection: "row",height: 120 ,alignItems: "center",justifyContent: "center"}}>
+
+                            <View style={{flexDirection: "row" ,width:"95%"}}>
+
+                                    <View style={{width:"60%", flexDirection: "row" }}>
+                                        <Image 
+                                                            resizeMode="cover" 
+                                                            PlaceholderContent={<ActivityIndicator color="#0000ff"/>} 
+                                                            source={ require("../../../assets/img/no-encontrada.png")} 
+                                                            style={styles.imagen} 
+                                                        /> 
+                                            <View > 
+                                                <Text style={styles.nombre}>Prueba</Text> 
+                                            
+                                                <Text style={styles.descripcion}>$000033 </Text> 
+                                            </View> 
+                                            <View style={{flexDirection:"column-reverse"}}>
+                                                <Text style={{fontSize:14,color: "#047857",marginRight:15}}>$01.00</Text>
+                                            </View>
+                                    </View>
+
+                                    <View style={{width:"40%"}}>
+                                                    <Text>Cantidad:</Text>
+                                                <TextInput 
+                                                    style={styles.textInput}
+                                                    keyboardType = 'numeric'
+                                                    // onChangeText = {(text)=> this.onChanged(text)}
+                                                    //value = {this.state.myNumber} 
+                                                    placeholder="Ingresa Cantidad"
+                                                    />
+                                                    <Button
+                                                            title="Añadir"
+                                                            containerStyle={styles.btnContainer}
+                                                            buttonStyle={styles.btn}
+                                                            /*Al hacer clic activamos el método onSubmit del botón */
+                                                            onPress={añadirCarrito()}
+                                                        />
+                                    </View>
+
+                            </View>
+                      </View>
+                    
+                </View>
+                <View style={styles.ctnSolicitados}>
+                    <View style={{alignItems: "center"}}>
+                        <Text style={styles.subCategoria}>Solicitados</Text>
+                    </View>
+                    <ListarPedidos/>
+                </View>
+            </View>
+        </View>
+
+      
+        
+       </View>
+       </ScrollView>
     )
 }
-const styles = StyleSheet.create({
 
-    sucursales:{ 
-        marginTop:10, 
-        marginBottom:10, 
+const styles = StyleSheet.create({
+  ctnHeader:{
+    width: "100%",
+    /* backgroundColor: "#ff0000", */
+    
+    
+  },
+  logo:{
+   
+    width: "40%",
+    alignItems:'flex-end',
+    backgroundColor:"#0066ff",
+    
+  },
+
+  generalCarrito:{
+    //flex: 1,
+    width:"100%",
+    flexDirection: "row",
+    marginTop: 10
+  },
+
+  ctnCirculo:{
+    flexDirection: "column-reverse",
+  },
+  circulo: {
+    borderRadius: Math.round(Dimensions.get('window').width + Dimensions.get('window').height) / 2,
+    width: Dimensions.get('window').width * 0.1,
+    height: Dimensions.get('window').width * 0.1,
+    backgroundColor:'#93C5FD',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  
+  ctnTotal:{
+      flex:1,
+      flexDirection: "column",
+      justifyContent: "center",
+        alignItems: "center",
+  },
+  
+  estiloTotal:{
+
+      fontSize: 30,
+      color: "#3B82F6"
+  },
+
+  imagen: { 
+    width:100, 
+    height:100 ,
+    marginRight: 2,
+    marginLeft: 10
+    }, 
+
+    ctnSolicitados:{
+        marginTop:15,
+        width:"100%",
+        flexDirection:"column",
+        
+    },
+
+    subCategoria:{
+        width: "90%",
+        backgroundColor: "#5B21B6",
+        color: "white",
+        padding: 5
+    },
+    lista: { 
+        flexDirection:"row", 
+        margin:10 ,
         alignItems: 'center', 
     }, 
-    body:{ 
-        flex: 1, 
-        backgroundColor: 'white' 
-         
+    viewImagen: { 
+        marginRight:15 
     }, 
-    viewSucursal:{ 
-        padding:15 
+    imagen: { 
+        width:80, 
+        height:80 
     }, 
     nombre: { 
-        fontSize:20, 
-        fontWeight:"bold" 
+        fontWeight:"bold" ,
+        color: "#312E81"
+    },
+    direccion: { 
+        paddingTop:2, 
+        color:"grey" 
     }, 
     descripcion: { 
-        marginTop:5, 
-        color:"grey" 
-    }, 
+        fontSize: 12,
+        flex: 1,
+        color: 'black',
+        /* textAlign: 'center', */
+        flexWrap: 'wrap'
+        
+    } ,
 
-    direccion: { 
-        marginTop:5, 
-        color:"grey" 
-    }, 
-    direccionTitulo: { 
-        fontWeight:"bold", 
-        marginTop:5, 
-        color:"grey" 
-    }, 
-    rating: { 
-        position:"absolute", 
-        right:0 
-    }, 
-    listaInfo: { 
-        borderBottomColor:"#D8D8D8", 
-        borderBottomWidth:1 
-         
-    } 
-}) ;
+    datosPlatillo:{
+        flex:2.5,
+       
+        
+    },
+
+    ctnPlatillo:{
+        flex: 1,
+        flexDirection: "row",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.23,
+        shadowRadius: 2.62,
+
+        elevation: 4,
+        padding: 10,
+        marginTop: 10,
+        marginBottom: 10
+        
+    },
+    ctnPrecio:{
+        flex: 1,
+        width: "20%",
+        justifyContent: "center",
+        alignItems: "center",
+        flexDirection: "column-reverse",
+        marginTop: 5,
+        marginBottom: 5
+        
+    },
+
+    precio:{
+        fontSize: 18,
+        color: "#065F46"
+    },
+
+    btnContainer: {
+        marginTop: 20,
+        width: "100%",
+      },
+      btn: {
+        backgroundColor: "#0A6ED3",
+      },
+    textInput: {paddingTop:5,paddingBottom: 5}
+});

@@ -123,7 +123,7 @@ function Platillo(propiedades){
     const {imagen,nombre,precio, descripcion,id} =platillo.item; 
     //Método que se ejecutará al dar clic a los items de la lista 
     const consultarRestaurante = () => { 
-        navegacion.navigate("ver_sucursal",{platillo});
+        navegacion.navigate("carrito");
     }; 
 
     return ( 

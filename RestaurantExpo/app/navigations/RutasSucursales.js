@@ -8,7 +8,7 @@ const Stack = createNativeStackNavigator();
 //Importamos las pantallas que deseamos agregar a la ruta
 import Sucursales from "../screens/Sucursales/Sucursales";
 import AgregarSuc from "../screens/Sucursales/AgregarSuc";
-import Sucursal from "../screens/Sucursales/Sucursal";
+import Carrito from "../screens/Sucursales/Sucursal";
 import AddReview from "../screens/Sucursales/AddReview";
 
 export default function RutasSucursales() {
@@ -27,8 +27,8 @@ export default function RutasSucursales() {
         options={{ title: "Nueva Sucursal" }}
       />
       <Stack.Screen 
-      name="ver_sucursal" 
-      component={Sucursal}
+      name="carrito" 
+      component={Carrito}
       />
 
     <Stack.Screen 

@@ -37,7 +37,7 @@ export default function Menu() {
       });  */
   
       const arrPlatillos=[]; 
-      db.collection("productos").where('existencia', '==', true) .limit(10).get() 
+      db.collection("productos").limit(10).get() 
           .then((res)=>{ 
             setPuntero(res.docs[res.docs.length -1]); 
             res.forEach((doc)=>{ 
@@ -83,9 +83,11 @@ const styles = StyleSheet.create({
     
   },
   logo:{
+   
     width: "40%",
     alignItems:'flex-end',
     backgroundColor:"#0066ff",
+    
   },
 
   vista: {

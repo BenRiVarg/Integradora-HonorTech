@@ -3,19 +3,20 @@ import { initializeApp } from "firebase/app";
 
 const firebaseConfig = {
 
-  apiKey: "AIzaSyCylBY4Sgpm8WSctEfrbfn6xi7EZWmmuys",
+  apiKey: "AIzaSyCOyJoCwDi1d_09uioGhneCQ5yA-acbxdQ",
 
-  authDomain: "restaurante-cdb96.firebaseapp.com",
+  authDomain: "todolist-ed874.firebaseapp.com",
 
-  projectId: "restaurante-cdb96",
+  databaseURL: "https://todolist-ed874-default-rtdb.firebaseio.com",
 
-  storageBucket: "restaurante-cdb96.appspot.com",
+  projectId: "todolist-ed874",
 
-  messagingSenderId: "504454623489",
+  storageBucket: "todolist-ed874.appspot.com",
 
-  appId: "1:504454623489:web:9eb25c8eaa377bf19bab00",
+  messagingSenderId: "1021361332997",
 
-  measurementId: "G-71KY9SB283"
+  appId: "1:1021361332997:web:f7e3bba39b794420864d6c"
+
 
 
 
