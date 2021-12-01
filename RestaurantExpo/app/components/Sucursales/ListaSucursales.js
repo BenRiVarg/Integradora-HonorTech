@@ -7,25 +7,28 @@ import {size} from 'lodash';
 
 
 
-export default function ListaSucursales(propiedades){ 
-  
-    const {sucursales}=propiedades; 
+export default function ListarPlatillos(propiedades){ 
+    
+    
+    const {platillos}=propiedades; 
     //const sucursales = []; 
     return( 
         <View> 
-            {size(sucursales)>0?( 
+            {size(platillos)>0?( 
                <FlatList 
-               data={sucursales} 
-               renderItem={(sucursales)=> <Sucursales sucursales={sucursales}/>} 
+               data={platillos} 
+               renderItem={(platillo)=> <Platillo  platillo={platillo}/>} 
                keyExtractor={(item,index)=> index.toString()} 
            /> 
             ):( 
                 <View style={styles.sucursales}> 
                      
                     <ActivityIndicator size="large" color="#0000ff"/> 
-                    <Text>Cargando Sucursales</Text> 
+                    <Text>Cargando Platillos</Text> 
                 </View> 
             )} 
+            {/* <Platillo  /> */}
+         
         </View> 
     ); 
 }
@@ -38,7 +41,8 @@ const styles=StyleSheet.create({
     } ,
     lista: { 
         flexDirection:"row", 
-        margin:10 
+        margin:10 ,
+        alignItems: 'center', 
     }, 
     viewImagen: { 
         marginRight:15 
@@ -48,61 +52,146 @@ const styles=StyleSheet.create({
         height:80 
     }, 
     nombre: { 
-        fontWeight:"bold" 
+        fontWeight:"bold" ,
+        color: "#312E81"
     },
     direccion: { 
         paddingTop:2, 
         color:"grey" 
     }, 
     descripcion: { 
-        paddingTop:2, 
-        color:"grey", 
-        width:300 
-    } 
+        fontSize: 12,
+        flex: 1,
+        color: 'black',
+        /* textAlign: 'center', */
+        flexWrap: 'wrap'
+        
+    } ,
+
+    datosPlatillo:{
+        flex:2.5,
+       
+        
+    },
+
+    ctnPlatillo:{
+        flex: 1,
+        flexDirection: "row",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.23,
+        shadowRadius: 2.62,
+
+        elevation: 4,
+        padding: 10,
+        marginTop: 10,
+        marginBottom: 10
+        
+    },
+    ctnPrecio:{
+        flex: 1,
+        width: "20%",
+        justifyContent: "center",
+        alignItems: "center",
+        flexDirection: "column-reverse",
+        marginTop: 5,
+        marginBottom: 5
+        
+    },
+
+    precio:{
+        fontSize: 18,
+        color: "#065F46"
+    }
 });
 
-function Sucursales(propiedades){ 
+function Platillo(propiedades){ 
     const navegacion= useNavigation();
+    //const imagen="";
 
     //Recibe la lista de sucursales 
-    const {sucursales} =propiedades; 
+    const {platillo} =propiedades; 
 
     console.log("Ejemplo Sucursales----------------")
-    console.log(propiedades);
+    console.log(platillo);
     console.log("Ejemplo Sucursales----------------")
     
     //en cada iteración obtiene los datos de la sucursal 
-    const {imagenes,nombre,direccion, descripcion,id} =sucursales.item; 
+    const {imagen,nombre,precio, descripcion,id} =platillo.item; 
     //Método que se ejecutará al dar clic a los items de la lista 
     const consultarRestaurante = () => { 
-        navegacion.navigate("ver_sucursal",{id,nombre});
+        navegacion.navigate("ver_sucursal",{platillo});
     }; 
 
     return ( 
         //Agregamos el clic a cada item al dar clic el item se opaca 
         <TouchableOpacity onPress={consultarRestaurante}> 
         {/*Esturctura de cada item */} 
-        <View style={styles.lista}> 
-            <View style={styles.viewImagen}> 
-        {/*cover escala la imagen de forma uniforme para evitar distorsión 
-                PlaceholderContent mostrará un spiner si tarda la carga de imagen 
-                source define que se mostrará la imagen 0 del arreglo de imágenes guardadas, si sucediera que 
-                no hay imagen se muestra la imagen no-encontrada cargada en el proyecto*/} 
+        {/* <View style={styles.lista}> 
+           <View>
                 <Image 
                     resizeMode="cover" 
                     PlaceholderContent={<ActivityIndicator color="#0000ff"/>} 
-                    source={imagenes[0] ? {uri: imagenes[0] }: require("../../../assets/img/no-encontrada.png")} 
+                    source={imagen ? {uri: imagen }: require("../../../assets/img/no-encontrada.png")} 
                     style={styles.imagen} 
                 /> 
             </View> 
-            {/*Mostramos los datos adicionales de la sucursal, en el caso de la descripción dado que puede ser 
-            larga limitamos el texto a mostrar*/} 
+        
             <View> 
                 <Text style={styles.nombre}>{nombre}</Text> 
-                <Text style={styles.direccion}>{direccion}</Text> 
+                <Text style={styles.direccion}>{precio}</Text> 
                 <Text style={styles.descripcion}>{descripcion.substring(0,60)}...</Text> 
             </View> 
+        </View>  */}
+
+        <View style={styles.lista}> 
+            <View style={styles.ctnPlatillo}>
+                    <View >
+                        <Image 
+                            resizeMode="cover" 
+                            PlaceholderContent={<ActivityIndicator color="#0000ff"/>} 
+                            source={imagen ? {uri: imagen }: require("../../../assets/img/no-encontrada.png")} 
+                            style={styles.imagen} 
+                        /> 
+                    </View> 
+                
+                    <View style={styles.datosPlatillo}> 
+                        <Text style={styles.nombre}>{nombre}</Text> 
+                       
+                        <Text style={styles.descripcion}>{descripcion}</Text> 
+                    </View> 
+                    <View style={styles.ctnPrecio}>
+                    <Text style={styles.precio}> $ {precio}</Text> 
+                    </View>
+            </View>
+         
         </View> 
+
+        {/* <View style={styles.lista}> 
+            <View style={styles.ctnPlatillo}>
+                    <View >
+                        <Image 
+                            resizeMode="cover" 
+                            PlaceholderContent={<ActivityIndicator color="#0000ff"/>} 
+                            source={imagen ? {uri: imagen }: require("../../../assets/img/no-encontrada.png")} 
+                            style={styles.imagen} 
+                        /> 
+                    </View> 
+                
+                    <View style={styles.datosPlatillo}> 
+                        <Text style={styles.nombre}>Prueba</Text> 
+                       
+                        <Text style={styles.descripcion}>Descripcion Descripcion Descripcion Descripcion Descripcion </Text> 
+                    </View> 
+                    <View style={styles.ctnPrecio}>
+                    <Text style={styles.precio}>$00.00</Text> 
+                    </View>
+            </View>
+         
+        </View>  */}
         </TouchableOpacity> 
     ); 
 } 

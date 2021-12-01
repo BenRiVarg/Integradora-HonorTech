@@ -10,6 +10,7 @@ import Reviews from '../../components/Sucursales/Reviews';
 import {map} from "lodash"; 
 /*Rating nos permite colocar la puntuación de la sucursal con estrellas 
 LisItem nos permitirá visualizar las propiedades de cada sucursal como una lista*/ 
+
 import { Rating, ListItem, Icon } from 'react-native-elements'
 
 
@@ -24,50 +25,47 @@ export default function Sucursal(propiedades){
     //Extraemos los objetos navigation y route  
     const {navigation,route}=propiedades; 
    //Extraemos el id y nombre contenido en el objeto params de route  
-    const {id,nombre}=route.params; 
+    const {platillo}=route.params; 
      
-    //useState para almacenar datos de la sucursal 
+    /* //useState para almacenar datos de la sucursal 
     const[sucursal,setSucursal]=useState(null); 
 
     //Estado para puntuación de la sucursal 
     const [rating, setRating]=useState(0); 
 
     useEffect(() => { 
-         /*setOption nos permite cambiar las propiedades del stack ver_sucursal, en 
-         nuestro caso cambiaremos el titulo de la ventana con el nombre de la     
-          sucursal seleccionada de la lista*/ 
+       
         navigation.setOptions({ title: nombre }); 
-      }, []); 
+      }, []);  */
 
      
 
-     useFocusEffect( 
+    /*  useFocusEffect( 
         useCallback(()=>{  
 
-                    /*Consultamos la sucursal con id recibido como parámetro desde la lista de sucursales*/ 
+                    //Consultamos la sucursal con id recibido como parámetro desde la lista de sucursales
             db.collection("sucursales").doc(id).get() 
             .then((resp) =>{ 
-                /*Extraemos los datos del documento recuperado en la consulta*/ 
+                //Extraemos los datos del documento recuperado en la consulta
                 const datos=resp.data(); 
-                /*Asignamos el id al conjunto de datos*/ 
+                //Asignamos el id al conjunto de datos
                 datos.id=resp.id; 
-                /*Asignamos los datos de la sucursal recuperado a nuestro useState*/ 
+                //Asignamos los datos de la sucursal recuperado a nuestro useState
                 setSucursal(datos); 
                 //Asignamos un rating promedio al state que se muestra en la vista
                 setRating(datos.rating)
             }); 
 
          },[]) 
-        );
+        ); */
 
    return( 
         <View> 
-            {sucursal?( 
+            {/* {sucursal?( 
                 
                 <ScrollView vertical> 
                     <CarouselImagenes 
-                    /*Enviamos la lista de imagenes de la sucursal, el ancho  
-                    alto que tomará el carousel */ 
+                   
                         arrayImages={sucursal.imagenes} 
                         height={250} 
                         width={screenWidth} 
@@ -79,9 +77,7 @@ export default function Sucursal(propiedades){
                         descripcion={sucursal.descripcion} 
                         rating={rating} 
                     />
-                     {/*Incrustamos la vista de acceso a la votación 
-                    enviamos la navegación actual para poder regresar 
-                    el id de la sucursal a la que pertenecen los comentarios*/} 
+                    
                     <Reviews 
                     navigation={navigation} 
                     id={sucursal.id} 
@@ -94,7 +90,7 @@ export default function Sucursal(propiedades){
                     <ActivityIndicator size="large" color="#0000ff"/> 
                     <Text>Cargando Sucursal</Text> 
                 </View> 
-            )} 
+            )}  */}
         </View> 
          
     )

@@ -2,9 +2,15 @@ import React ,{useState, useEffect,useCallback}from 'react';
 import {View, Text,StyleSheet} from 'react-native'
 import { useFocusEffect } from "@react-navigation/native";
 
+
 import {firebaseApp} from "../../utils/firebase"; 
 import firebase from 'firebase/app'; 
 import "firebase/firestore";
+
+
+//COMPONENTES//
+import ListarPlatillos from "../../components/Sucursales/ListaSucursales";
+
 
 const db = firebase.firestore(firebaseApp); 
 
@@ -16,7 +22,7 @@ export default function Menu() {
   //State para el puntero
   const [puntero, setPuntero]=useState(null);
 
-  const [comentario, setComentario]=useState([]); 
+  const [platillos, setPlatillos]=useState([]); 
 
   useFocusEffect( 
     useCallback(()=>{ 
@@ -31,7 +37,7 @@ export default function Menu() {
       });  */
   
       const arrPlatillos=[]; 
-      db.collection("platillos").limit(10).get() 
+      db.collection("productos").where('existencia', '==', true) .limit(10).get() 
           .then((res)=>{ 
             setPuntero(res.docs[res.docs.length -1]); 
             res.forEach((doc)=>{ 
@@ -43,7 +49,7 @@ export default function Menu() {
               arrPlatillos.push(comentario); 
           }); 
            //Al terminar de recuperar todos los documentos los almacenamos en el useState sucursales 
-           setComentario(arrPlatillos); 
+           setPlatillos(arrPlatillos); 
            console.log("BD en verdad conectada?____________");
            console.log(arrPlatillos);
            console.log("BD en verdad conectada?____________"); 
@@ -52,10 +58,14 @@ export default function Menu() {
     );
 
     return (
-      <View>
+      <View style={styles.vista}>
         <View stye={styles.ctnHeader}>
             <View style={styles.logo}>
             <Text> RESTAURANT APP</Text>
+            </View>
+            <View>
+              <Text>Conoce nuestro Menú , haz tap en el producto para agregarlo a tu carrito</Text>
+              <ListarPlatillos platillos={platillos}/>
             </View>
         </View>
 
@@ -68,17 +78,24 @@ export default function Menu() {
 const styles = StyleSheet.create({
   ctnHeader:{
     width: "100%",
-    backgroundColor: "#ff0000",
+    /* backgroundColor: "#ff0000", */
+    
     
   },
   logo:{
-    width: "40%"
+    width: "40%",
+    alignItems:'flex-end',
+    backgroundColor:"#0066ff",
+  },
+
+  vista: {
+    flex: 1,
+    backgroundColor: "#ebeffa",
   },
   /* 
- */  vista: {
-    flex: 1,
-    backgroundColor: "#ff0000",
-  },
+
+  
+ */  
   btn: {
     position: "absolute",
     bottom: 10,
