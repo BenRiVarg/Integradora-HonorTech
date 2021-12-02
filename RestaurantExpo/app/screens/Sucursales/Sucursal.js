@@ -6,6 +6,7 @@ import {Image} from 'react-native-elements';
 import {firebaseApp} from "../../utils/firebase"; 
 import firebase from 'firebase/app'; 
 import "firebase/firestore";
+import { FireSQL } from "firesql"; 
 
 
 //COMPONENTES//
@@ -14,6 +15,7 @@ import ListarPedidos from "../../components/Sucursales/ListarPedido";
 
 
 const db = firebase.firestore(firebaseApp); 
+const fireSQL = new FireSQL(db, { includeId: "id" });
 
 export default function Carrito() {
 
@@ -25,7 +27,7 @@ export default function Carrito() {
 
   const [ordenDia, setOD]=useState(null); 
 
-  const [platillos, setPlatillos]=useState([]); 
+  const [productos, setProductos]=useState(null); 
   const [loading,setIsLoading]=useState(false);
   var imagen="";
 
@@ -37,11 +39,21 @@ export default function Carrito() {
   
       const arrPlatillos=[]; 
       console.log("------------------Obteniendo Registros---------");
+      console.log(user.uid);
       /* db.collection("pedidos").orderBy('usuario_entregado')
       .on('child_added', function(snapshot) { 
           var valor = snapshot.val();
           console.log(valor);
       }); */
+
+      //.query(`SELECT * FROM pedidos WHERE usuario = '${user.uid}%' AND entregado=false`) 
+      fireSQL 
+      .query('SELECT * FROM pedidos WHERE usuario="'+user.uid+'" AND entregado = FALSE') 
+      .then((response) => { 
+        setProductos(response);
+      }); 
+  
+      console.log(productos)
       console.log("------------------Obteniendo Registros---------");
       /* .where("usuario","==",user.uid).limit(10).get() 
           .then((res)=>{ 
@@ -67,7 +79,7 @@ export default function Carrito() {
 
     
    
-    function añadirCarrito(){
+    const añadirCarrito=()=>{
         console.log("Disparandose");
         var pedido={
             usuario: user.uid,
@@ -158,7 +170,7 @@ export default function Carrito() {
                                                             containerStyle={styles.btnContainer}
                                                             buttonStyle={styles.btn}
                                                             /*Al hacer clic activamos el método onSubmit del botón */
-                                                            onPress={añadirCarrito()}
+                                                            onPress={añadirCarrito}
                                                         />
                                     </View>
 
